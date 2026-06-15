@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Longship Labs</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --navy: #060d18;
+  --navy-mid: #0a1628;
+  --navy-light: #112240;
+  --gold: #c8960a;
+  --gold-light: #e8b422;
+  --gold-dim: rgba(200,150,10,0.12);
+  --blue: #4a9eda;
+  --text: #e8e8f0;
+  --text-mid: #8888a8;
+  --text-dim: #3a3a55;
+  --border: rgba(200,150,10,0.15);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--navy);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem 3rem;
+  background: rgba(6,13,24,0.6);
+  backdrop-filter: blur(20px);
+  border-bottom: 0.5px solid rgba(200,150,10,0.08);
+}
+.nav-wordmark { font-size: 13px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-mid); }
+.nav-contact {
+  font-size: 12px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gold); text-decoration: none; padding: 8px 20px;
+  border: 0.5px solid rgba(200,150,10,0.4);
+  transition: background 0.3s, border-color 0.3s;
+}
+.nav-contact:hover { background: var(--gold-dim); border-color: var(--gold); }
+
+/* CANVAS */
+#aurora {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+
+/* All sections sit above canvas */
+.above { position: relative; z-index: 1; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 8rem 2rem 6rem;
+  position: relative;
+}
+
+.hero-logo {
+  width: 240px; margin-bottom: 2.5rem;
+  filter: drop-shadow(0 0 50px rgba(200,150,10,0.25)) drop-shadow(0 0 100px rgba(74,158,218,0.1));
+}
+.hero-eyebrow { font-size: 11px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem; opacity: 0.8; }
+.hero-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(34px, 5vw, 58px); font-weight: 400; line-height: 1.2;
+  color: var(--text); letter-spacing: -0.01em;
+  margin-bottom: 1.5rem; max-width: 640px;
+}
+.hero-title em { font-style: italic; color: var(--gold-light); }
+.hero-sub { font-size: 15px; font-weight: 300; color: var(--text-mid); line-height: 1.8; max-width: 400px; }
+
+.hero-scroll {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+}
+.hero-scroll span { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); }
+.scroll-line { width: 0.5px; height: 40px; background: linear-gradient(to bottom, rgba(200,150,10,0.3), transparent); }
+
+/* DIVIDER */
+.divider {
+  display: flex; align-items: center; gap: 1.5rem;
+  padding: 0 3rem; margin: 0 auto; max-width: 900px;
+}
+.divider-line { flex: 1; height: 0.5px; background: var(--border); }
+.divider-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); white-space: nowrap; }
+
+/* ORION SECTION */
+.orion-section {
+  padding: 8rem 2rem;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  max-width: 680px; margin: 0 auto;
+}
+
+.coming-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 10px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); background: var(--gold-dim);
+  border: 0.5px solid rgba(200,150,10,0.3);
+  padding: 6px 16px; border-radius: 20px; margin-bottom: 2rem;
+}
+.coming-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.orion-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(52px, 8vw, 80px); font-weight: 400;
+  color: var(--text); letter-spacing: -0.02em; line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.orion-tag {
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 1.75rem; opacity: 0.8;
+}
+
+.orion-desc {
+  font-size: 15px; font-weight: 300; color: var(--text-mid);
+  line-height: 1.85; max-width: 480px; margin-bottom: 3.5rem;
+}
+
+/* SIGNUP FORM */
+.signup-wrap {
+  width: 100%; max-width: 420px;
+}
+.signup-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 1rem; display: block;
+}
+.signup-row {
+  display: flex; gap: 0;
+  border: 0.5px solid rgba(200,150,10,0.3);
+  background: rgba(6,13,24,0.6);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.signup-row:focus-within { border-color: var(--gold); }
+
+.signup-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  padding: 14px 18px; font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 300; color: var(--text);
+  letter-spacing: 0.02em;
+}
+.signup-input::placeholder { color: var(--text-dim); }
+
+.signup-btn {
+  background: var(--gold); border: none; cursor: pointer;
+  padding: 14px 22px; font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 400; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--navy);
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.signup-btn:hover { background: var(--gold-light); }
+
+.signup-note {
+  font-size: 11px; color: var(--text-dim); margin-top: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.signup-success {
+  display: none; text-align: center;
+  padding: 1rem; border: 0.5px solid rgba(200,150,10,0.3);
+  background: var(--gold-dim);
+}
+.signup-success p { font-size: 13px; color: var(--gold); letter-spacing: 0.06em; }
+
+/* MORE TO COME */
+.more-section { padding: 4rem 3rem 6rem; text-align: center; }
+.more-section p { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); }
+
+/* FOOTER */
+footer {
+  border-top: 0.5px solid var(--border); padding: 2rem 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-copy { font-size: 12px; letter-spacing: 0.08em; color: var(--text-dim); }
+.footer-email { font-size: 12px; letter-spacing: 0.08em; color: var(--gold); text-decoration: none; opacity: 0.6; transition: opacity 0.2s; }
+.footer-email:hover { opacity: 1; }
+
+@media (max-width: 768px) {
+  nav { padding: 1.25rem 1.5rem; }
+  .orion-section { padding: 5rem 1.5rem; }
+  .signup-row { flex-direction: column; }
+  .signup-btn { padding: 12px; }
+  footer { padding: 1.5rem; flex-direction: column; gap: 0.75rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="aurora"></canvas>
+
+<nav class="above">
+  <span class="nav-wordmark">Longship Labs</span>
+  <a href="mailto:kristian@longshiplabs.io" class="nav-contact">Contact</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero above">
+  <img src="longship_logo.png" alt="Longship Labs" class="hero-logo">
+  <p class="hero-eyebrow">Norway · Est. 2026</p>
+  <h1 class="hero-title">Tools built for the<br>problems we <em>know</em></h1>
+  <p class="hero-sub">We build focused software for communities we're part of — starting where the need is clearest.</p>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="divider above">
+  <div class="divider-line"></div>
+  <span class="divider-label">Coming Soon</span>
+  <div class="divider-line"></div>
+</div>
+
+<!-- ORION -->
+<section class="orion-section above">
+  <div class="coming-badge"><span class="coming-badge-dot"></span> In Development</div>
+  <h2 class="orion-name">Orion</h2>
+  <p class="orion-tag">VA Management Panel</p>
+  <p class="orion-desc">A management panel for virtual airlines — giving staff real-time visibility into routes, pilot activity, and operational health. Built for the communities that live and breathe virtual aviation.</p>
+
+  <div class="signup-wrap">
+    <span class="signup-label">Be first to know when we launch</span>
+    <div class="signup-row" id="formRow">
+      <input type="email" class="signup-input" id="emailInput" placeholder="your@email.com">
+      <button class="signup-btn" id="submitBtn" onclick="handleSubmit()">Notify me</button>
+    </div>
+    <p class="signup-note">No spam. Just a launch notification.</p>
+    <div class="signup-success" id="successMsg">
+      <p>You're on the list — we'll be in touch. ✦</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider above">
+  <div class="divider-line"></div>
+  <span class="divider-label">More to come</span>
+  <div class="divider-line"></div>
+</div>
+
+<section class="more-section above">
+  <p>We're just getting started</p>
+</section>
+
+<footer class="above">
+  <span class="footer-copy">© 2026 Longship Labs</span>
+  <a href="mailto:kristian@longshiplabs.io" class="footer-email">kristian@longshiplabs.io</a>
+</footer>
+
+<script>
+// Formspree signup
+async function handleSubmit() {
+  const email = document.getElementById('emailInput').value;
+  if (!email || !email.includes('@')) {
+    document.getElementById('emailInput').style.borderColor = 'rgba(200,80,80,0.5)';
+    return;
+  }
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = '...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('https://formspree.io/f/mqeondvq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    if (res.ok) {
+      document.getElementById('formRow').style.display = 'none';
+      document.querySelector('.signup-note').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    } else {
+      btn.textContent = 'Try again';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    btn.textContent = 'Try again';
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('emailInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSubmit();
+});
+
+// Aurora
+const canvas = document.getElementById('aurora');
+const ctx = canvas.getContext('2d');
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+const waves = [
+  { y: 0.3,  amplitude: 90,  frequency: 0.0014, speed: 0.0004, color: [0, 180, 120],   alpha: 0.07, width: 190 },
+  { y: 0.4,  amplitude: 65,  frequency: 0.002,  speed: 0.0006, color: [20, 140, 200],  alpha: 0.06, width: 150 },
+  { y: 0.22, amplitude: 110, frequency: 0.001,  speed: 0.0003, color: [80, 200, 160],  alpha: 0.05, width: 210 },
+  { y: 0.48, amplitude: 50,  frequency: 0.0025, speed: 0.0007, color: [40, 100, 220],  alpha: 0.04, width: 130 },
+  { y: 0.18, amplitude: 75,  frequency: 0.0018, speed: 0.0005, color: [120, 220, 180], alpha: 0.035, width: 170 },
+];
+let time = 0;
+
+function drawAurora() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  sky.addColorStop(0, '#060d18');
+  sky.addColorStop(0.6, '#081220');
+  sky.addColorStop(1, '#0a1830');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Stars
+  for (let i = 0; i < 140; i++) {
+    const sx = ((42 * (i * 7 + 13)) % 997) / 997 * canvas.width;
+    const sy = ((42 * (i * 11 + 7)) % 991) / 991 * canvas.height * 0.65;
+    const ss = ((i * 3) % 5) / 5 * 1.2 + 0.3;
+    const flicker = 0.4 + 0.6 * Math.abs(Math.sin(time * 0.001 * ((i % 5) + 1) + i));
+    ctx.globalAlpha = flicker * 0.65;
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.beginPath();
+    ctx.arc(sx, sy, ss, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Aurora waves
+  waves.forEach(wave => {
+    const baseY = canvas.height * wave.y;
+    for (let x = 0; x < canvas.width; x += 2) {
+      const y = baseY
+        + Math.sin(x * wave.frequency + time * wave.speed) * wave.amplitude
+        + Math.sin(x * wave.frequency * 1.7 + time * wave.speed * 1.3) * wave.amplitude * 0.4;
+      const grad = ctx.createLinearGradient(x, y - wave.width, x, y + wave.width);
+      grad.addColorStop(0, `rgba(${wave.color},0)`);
+      grad.addColorStop(0.3, `rgba(${wave.color},${wave.alpha})`);
+      grad.addColorStop(0.5, `rgba(${wave.color},${wave.alpha * 1.5})`);
+      grad.addColorStop(0.7, `rgba(${wave.color},${wave.alpha})`);
+      grad.addColorStop(1, `rgba(${wave.color},0)`);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y - wave.width);
+      ctx.lineTo(x, y + wave.width);
+      ctx.stroke();
+    }
+  });
+
+  // Water at bottom of viewport
+  const waterY = canvas.height * 0.75;
+  const waterGrad = ctx.createLinearGradient(0, waterY, 0, canvas.height);
+  waterGrad.addColorStop(0, 'rgba(6,13,24,0)');
+  waterGrad.addColorStop(0.4, 'rgba(8,18,35,0.7)');
+  waterGrad.addColorStop(1, 'rgba(6,13,24,0.98)');
+  ctx.fillStyle = waterGrad;
+  ctx.fillRect(0, waterY, canvas.width, canvas.height);
+
+  // Aurora reflection in water
+  waves.forEach(wave => {
+    const reflY = canvas.height * 0.82;
+    for (let x = 0; x < canvas.width; x += 3) {
+      const y = reflY + Math.sin(x * wave.frequency * 1.1 + time * wave.speed * 1.3) * wave.amplitude * 0.2;
+      const grad = ctx.createLinearGradient(x, y - 30, x, y + 30);
+      grad.addColorStop(0, `rgba(${wave.color},0)`);
+      grad.addColorStop(0.5, `rgba(${wave.color},${wave.alpha * 0.35})`);
+      grad.addColorStop(1, `rgba(${wave.color},0)`);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 30);
+      ctx.lineTo(x, y + 30);
+      ctx.stroke();
+    }
+  });
+
+  time++;
+  requestAnimationFrame(drawAurora);
+}
+drawAurora();
+</script>
+</body>
+</html>
